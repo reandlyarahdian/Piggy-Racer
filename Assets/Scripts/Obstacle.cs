@@ -6,42 +6,55 @@ public class Obstacle : MonoBehaviour
 {
     [Header("Obstacle Settings")]
     public GameObject[] obstaclePrefabs;
-    public float spawnInterval = 2f;
 
-    [Header("Spawn Offset")]
-    public float xOffsetFromCamera = 2f; // How far off-screen to the right obstacles spawn
+    [Header("Spawn Height")]
+    public float spawnY = 3.4f;
 
-    private float timer;
-    private Camera mainCam;
+    [Header("Spawn Object")]
+    public int spawnObj = 15;
+
+    private float minX, maxX;
 
     void Start()
     {
-        mainCam = Camera.main;
-    }
+        CalculateColliderBounds();
 
-    void Update()
-    {
-        timer += Time.deltaTime;
-
-        if (timer >= spawnInterval)
+        for (int i = 0; i < spawnObj; i++)
         {
-            SpawnObstacle();
-            timer = 0f;
+            SpawnAllObstacles();
         }
     }
 
-    void SpawnObstacle()
+    void SpawnAllObstacles()
     {
         if (obstaclePrefabs.Length == 0) return;
 
-        GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)];
+        foreach (GameObject prefab in obstaclePrefabs)
+        {
+            float randomX = Random.Range(minX, maxX);
+            Vector3 spawnPos = new Vector3(randomX, spawnY, 0f);
+            Instantiate(prefab, spawnPos, Quaternion.identity);
+        }
+    }
 
-        // Get the right edge of the camera in world units
-        float camRightEdge = mainCam.ViewportToWorldPoint(new Vector3(1, 0, 0)).x;
+    void CalculateColliderBounds()
+    {
+        Collider2D[] colliders = GetComponents<Collider2D>();
 
-        // Final spawn position
-        Vector3 spawnPos = new Vector3(camRightEdge + xOffsetFromCamera, -3.4f, 0f);
+        if (colliders.Length == 0)
+        {
+            Debug.LogWarning("No 2D colliders found on this GameObject.");
+            minX = maxX = transform.position.x;
+            return;
+        }
 
-        Instantiate(prefab, spawnPos, Quaternion.identity);
+        Bounds combinedBounds = colliders[0].bounds;
+        for (int i = 1; i < colliders.Length; i++)
+        {
+            combinedBounds.Encapsulate(colliders[i].bounds);
+        }
+
+        minX = combinedBounds.min.x + 20;
+        maxX = combinedBounds.max.x - 10;
     }
 }

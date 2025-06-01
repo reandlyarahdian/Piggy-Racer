@@ -16,6 +16,30 @@ public class PlayerTrigger : MonoBehaviour
         if (collision.CompareTag("Obstacle"))
         {
             controller.OnHit();
+            StartCoroutine(waitObject(collision.gameObject));
         }
+
+        if (collision.CompareTag("Upgrade"))
+        {
+            GameManager.instance.StartGame();
+            StartCoroutine(waitObject(collision.gameObject));
+        }
+
+        if (collision.CompareTag("End"))
+        {
+            GameManager.instance.EndGame();
+        }
+
+        if (collision.CompareTag("Coin"))
+        {
+            controller.Point();
+            Destroy(collision.gameObject);
+        }
+    }
+
+    private IEnumerator waitObject(GameObject go)
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(go);
     }
 }

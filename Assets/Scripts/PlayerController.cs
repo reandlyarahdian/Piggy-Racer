@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     private bool canDash = true;
     private bool canRun = true;
 
-
     [Header("References")]
     Animator myAnimator;
     Vector2 moveInput;
@@ -30,6 +29,10 @@ public class PlayerController : MonoBehaviour
     BoxCollider2D myFeetCollider;
 
     float gravityAtStart;
+    float health;
+
+    [HideInInspector]
+    public int Points;
 
     //[Header("CameraShake")]
     //public CameraShake cameraShake;
@@ -43,6 +46,12 @@ public class PlayerController : MonoBehaviour
         //myBodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
         gravityAtStart = myrigidbody.gravityScale;
+        health = 3;
+    }
+
+    public void RSpeed(float speed)
+    {
+        runSpeed = speed;
     }
 
     // Update is called once per frame
@@ -52,7 +61,9 @@ public class PlayerController : MonoBehaviour
         FlipSprite();
         JumpCheck();
 
-        var move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        float h = Input.GetAxisRaw("Horizontal") < 0 ? 0 : Input.GetAxisRaw("Horizontal");
+
+        var move = new Vector2(h, 0);
 
         OnMove(move);
 
@@ -118,10 +129,10 @@ public class PlayerController : MonoBehaviour
     {
         bool playerHorizontalSpeed = Mathf.Abs(myrigidbody.velocity.x) > Mathf.Epsilon;
 
-        if (playerHorizontalSpeed)
-        {
-            transform.localScale = new Vector2(Mathf.Sign(myrigidbody.velocity.x), 1f);
-        }
+        //if (playerHorizontalSpeed)
+        //{
+        //    transform.localScale = new Vector2(Mathf.Sign(myrigidbody.velocity.x), 1f);
+        //}
     }
 
     void JumpCheck()
@@ -138,8 +149,20 @@ public class PlayerController : MonoBehaviour
 
     public void OnHit()
     {
+        myAnimator.SetBool("Jump", false);
         myAnimator.SetTrigger("Hit");
+        AudioManager.Instance.PlaySFX("SFX");
+        health -= 1;
+        if(health <= 0)
+        {
+            GameManager.instance.EndGame();
+        }
         StartCoroutine(StopRunnig());
+    }
+
+    public void Point()
+    {
+        Points += 1;
     }
 
     private IEnumerator StopRunnig()
