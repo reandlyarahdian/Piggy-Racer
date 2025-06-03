@@ -11,7 +11,10 @@ public class Obstacle : MonoBehaviour
     public float spawnY = 3.4f;
 
     [Header("Spawn Object")]
-    public int spawnObj = 15;
+    public int spawnObj = 7;
+
+    [Header("Spacing")]
+    public float spacing = 20f;
 
     private float minX, maxX;
 
@@ -19,23 +22,33 @@ public class Obstacle : MonoBehaviour
     {
         CalculateColliderBounds();
 
-        for (int i = 0; i < spawnObj; i++)
-        {
-            SpawnAllObstacles();
-        }
+        SpawnAllObstacles();
     }
-
     void SpawnAllObstacles()
     {
         if (obstaclePrefabs.Length == 0) return;
 
-        foreach (GameObject prefab in obstaclePrefabs)
+        float space = Random.Range(10, spacing);
+        List<float> usedPositions = new List<float>();
+
+        float availableWidth = maxX - minX;
+        int maxPossibleSpawns = Mathf.FloorToInt(availableWidth / spacing);
+
+        int spawnCount = Mathf.Min(spawnObj, maxPossibleSpawns);
+        float startX = minX;
+
+        for (int i = 0; i < spawnCount; i++)
         {
-            float randomX = Random.Range(minX, maxX);
-            Vector3 spawnPos = new Vector3(randomX, spawnY, 0f);
+            float xPos = startX + (i * space);
+
+            // Choose a random prefab
+            GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)];
+
+            Vector3 spawnPos = new Vector3(xPos, spawnY, 0f);
             Instantiate(prefab, spawnPos, Quaternion.identity);
         }
     }
+
 
     void CalculateColliderBounds()
     {

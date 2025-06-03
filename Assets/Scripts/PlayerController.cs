@@ -69,9 +69,13 @@ public class PlayerController : MonoBehaviour
 
         var jump = Input.GetButtonDown("Jump");
 
-        if (jump)
+        if (JumpCheck())
         {
             OnJump(jump);
+        }
+        else
+        {
+            myrigidbody.velocity += new Vector2(moveInput.x, 0);
         }
 
         var dashInput = Input.GetButtonDown("Dash");
@@ -106,7 +110,7 @@ public class PlayerController : MonoBehaviour
     {
         if (value)
         {
-            myrigidbody.velocity += new Vector2(1f, jumpSpeed);
+            myrigidbody.velocity += new Vector2(moveInput.x, jumpSpeed);
             myAnimator.SetBool("Jump", value);
         }
     }
@@ -135,15 +139,17 @@ public class PlayerController : MonoBehaviour
         //}
     }
 
-    void JumpCheck()
+    bool JumpCheck()
     {
         if (myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
         {
             myAnimator.SetBool("Jump", false);
+            return true;
         }
-        else if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
+        else
         {
             myAnimator.SetBool("Jump", true);
+            return false;
         }
     }
 
@@ -160,9 +166,10 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(StopRunnig());
     }
 
-    public void Point()
+    public void Point(int n)
     {
-        Points += 1;
+        Points += n;
+        CoinKeeper.Instance.Point(n);
     }
 
     private IEnumerator StopRunnig()

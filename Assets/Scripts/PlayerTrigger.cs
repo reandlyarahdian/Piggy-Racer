@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerTrigger : MonoBehaviour
 {
     private PlayerController controller;
+    private UIManager uiManager;
 
     private void Start()
     {
+        uiManager = FindAnyObjectByType<UIManager>();
         controller = GetComponent<PlayerController>();
     }
 
@@ -32,7 +34,8 @@ public class PlayerTrigger : MonoBehaviour
 
         if (collision.CompareTag("Coin"))
         {
-            controller.Point();
+            controller.Point(1);
+            uiManager.PointText(controller.Points.ToString());
             Destroy(collision.gameObject);
         }
     }

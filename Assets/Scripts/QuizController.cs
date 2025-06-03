@@ -7,6 +7,7 @@ public class QuizController : MonoBehaviour
     private QuestionCollection questionCollection;
     private QuizQuestion currentQuestion;
     private GameManager gameManager;
+    private UIManager uiManager;
 
     [SerializeField]
     private float delayBetweenQuestions = 3f;
@@ -14,7 +15,8 @@ public class QuizController : MonoBehaviour
 
     private void Awake()
     {
-        questionCollection = FindAnyObjectByType<QuestionCollection>();
+        uiManager = GetComponent<UIManager>();
+        questionCollection = GetComponent<QuestionCollection>();
         gameManager = GetComponent<GameManager>();
     }
 
@@ -28,7 +30,7 @@ public class QuizController : MonoBehaviour
         currentQuestion = questionCollection.GetUnaskedQuestion();
         if (currentQuestion != null && temp < 10)
         {
-            gameManager.SetupUIForQuestion(currentQuestion);
+            uiManager.SetupUIForQuestion(currentQuestion);
         }
         else
         {
@@ -45,6 +47,7 @@ public class QuizController : MonoBehaviour
 
     public void SubmitAnswer(int answerNumber)
     {
+        Debug.Log(answerNumber);
         bool isCorrect = answerNumber == currentQuestion.CorrectAnswer;
         gameManager.HandleSubmittedAnswer(isCorrect);
 

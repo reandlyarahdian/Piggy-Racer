@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd5176394f4c6ce4981cee06525be2ca, type: 3}
   m_Name: Questions 6
   m_EditorClassIdentifier: 
-  question: Ayam jago bertelur di atap. Telurnya jatuh ke mana?
+  question: "Apa lawan kata \u201Ctidur\u201D?"
   answers:
-  - Atas
-  - Bawah
-  - Ayam Jago Tidak bertelur
+  - A. Bangun
+  - B. Nonton
+  - C. Lembur
   correctAnswer: 2

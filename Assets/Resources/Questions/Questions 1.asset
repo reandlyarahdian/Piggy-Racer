@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   question: Ayam jago bertelur di atap. Telurnya jatuh ke mana?
   answers:
-  - Atas
-  - Bawah
-  - Ayam Jago Tidak bertelur
+  - A. Atas
+  - B. Bawah
+  - C. Ayam Jago Tidak bertelur
   correctAnswer: 2
