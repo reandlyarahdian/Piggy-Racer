@@ -24,24 +24,24 @@ public class Obstacle : MonoBehaviour
 
         SpawnAllObstacles();
     }
+
     void SpawnAllObstacles()
     {
-        if (obstaclePrefabs.Length == 0) return;
-
-        float space = Random.Range(10, spacing);
-        List<float> usedPositions = new List<float>();
-
         float availableWidth = maxX - minX;
         int maxPossibleSpawns = Mathf.FloorToInt(availableWidth / spacing);
 
-        int spawnCount = Mathf.Min(spawnObj, maxPossibleSpawns);
-        float startX = minX;
+        int spawnCount = Mathf.Min(spawnObj, maxPossibleSpawns + Mathf.FloorToInt(spacing / 2));
+        
+        Debug.Log($"{minX} {maxX} {maxPossibleSpawns} {spawnCount}");
+
+        float startX = minX + 20;
 
         for (int i = 0; i < spawnCount; i++)
         {
+            float space = Random.Range(spacing / 2, spacing);
+
             float xPos = startX + (i * space);
 
-            // Choose a random prefab
             GameObject prefab = obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)];
 
             Vector3 spawnPos = new Vector3(xPos, spawnY, 0f);
@@ -67,7 +67,7 @@ public class Obstacle : MonoBehaviour
             combinedBounds.Encapsulate(colliders[i].bounds);
         }
 
-        minX = combinedBounds.min.x + 20;
-        maxX = combinedBounds.max.x - 10;
+        minX = combinedBounds.min.x;
+        maxX = combinedBounds.max.x;
     }
 }
